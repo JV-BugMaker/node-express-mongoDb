@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
+//添加db
+var settings = require('./settings');
 var users = require('./routes/users');
 
 var app = express();
@@ -21,6 +23,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//直接访问了 routes
+routes(app);
 
 app.use('/', routes);
 app.use('/users', users);
