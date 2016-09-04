@@ -9,6 +9,9 @@ var routes = require('./routes/index');
 //添加db
 var settings = require('./settings');
 var users = require('./routes/users');
+//添加session在mongodb中
+var session = require('express-session');
+var MongoStore = require('connect-mongo').(session);
 
 var app = express();
 
@@ -24,6 +27,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//添加session
+app.use(session({
+  secret:settings.cookieSecret,
+  key:settings.db, //cookie name
+  cookie:{maxAge:1000*60*60*24*30}, //30day
+  store:new MongoStore({
+    db:settings.db,
+    host:settings.host,
+    port:settings.port
+  })
+}));
 //直接访问了 routes
 routes(app);
 
