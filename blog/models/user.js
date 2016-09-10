@@ -9,8 +9,8 @@ function User(user){
 module.exports = User;
 //存储用户信息
 User.prototype.save = function(callback){
-    //要存入数据库的用户文档
-    var User = {
+    //要存入数据库的用户文档 数据 对象
+    var user = {
         name:this.name,
         password:this.password,
         email:this.email
@@ -27,7 +27,7 @@ User.prototype.save = function(callback){
             mongodb.close();
             return  callback(err);
           }
-
+          //插入数据 user 是对象
           collection.insert(user,{
             safe:true
           },function(err,user){
@@ -36,8 +36,9 @@ User.prototype.save = function(callback){
                 //错误返回错误信息
                 return callback(err);
             }
+            //返回user对象
             //成功 err为null 并返回存储后的用户文档
-            callback(null,user[0]);
+            callback(null,user);
           });
       });
     });
@@ -51,7 +52,7 @@ User.get = function(name,callback){
         return callback(err);
     }
     //读取 users 集合
-    db.collection('user',function(err,collection){
+    db.collection('users',function(err,collection){
         if(err){
             mongodb.close();
             return callback(err);

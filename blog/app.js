@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 //添加db
 var settings = require('./settings');
-var flash = require('./connect-flash');
+var flash = require('connect-flash');
 var users = require('./routes/users');
 //添加session在mongodb中
 var session = require('express-session');
