@@ -11,7 +11,7 @@ var settings = require('./settings');
 var users = require('./routes/users');
 //添加session在mongodb中
 var session = require('express-session');
-var MongoStore = require('connect-mongo').(session);
+var MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
