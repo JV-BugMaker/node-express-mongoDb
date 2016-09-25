@@ -136,14 +136,15 @@ module.exports = function(app){
           req.flash('error','未登录');
           return res.redirect('/login');
       }
-      return next();
+      console.log('ok but not jump');
+      next();
   }
   function checkNotLogin(req,res,next)
   {
       if(req.session.user){
           req.flash('error','已登录');
-          return res.redirect('back');
+          return res.redirect('/');
       }
-      return next();
+      next();
   }
 };
