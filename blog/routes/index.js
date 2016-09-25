@@ -19,6 +19,7 @@ module.exports = function(app){
           res.render('index',{
             title:'主页',
             user:req.session.user,
+            posts:posts,
             success:req.flash('success').toString(),
             error:req.flash('error').toString(),
           });
@@ -133,16 +134,16 @@ module.exports = function(app){
   {
       if(!req.session.user){
           req.flash('error','未登录');
-          res.redirect('/login');
+          return res.redirect('/login');
       }
-      next();
+      return next();
   }
   function checkNotLogin(req,res,next)
   {
       if(req.session.user){
           req.flash('error','已登录');
-          res.redirect('back');
+          return res.redirect('back');
       }
-      next();
+      return next();
   }
 };
