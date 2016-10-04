@@ -4,6 +4,7 @@
 *对文章数据处理
  */
 var mongodb = require('./db');
+var markdown = require('markdown').markdown;
 
 function Post(name,title,post)
 {
@@ -84,6 +85,9 @@ Post.get = function(name,callback){
               if(err){
                   return callback(err);
               }
+              docs.forEach(function(doc){
+                  doc.post = markdown.toHTML(doc.post);
+              });
               //插入很共返回null 和文档
               callback(null,docs);
           });
