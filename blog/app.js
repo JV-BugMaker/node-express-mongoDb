@@ -15,7 +15,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
 var app = express();
-
+var multer = require('multer');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -40,6 +40,14 @@ app.use(session({
     port:settings.port
   })
 }));
+
+app.use(multer({
+    dest:'./public/images',
+    rename:function(fieldname,filename){
+        return filename;
+    }
+}));
+
 //直接访问了 routes
 routes(app);
 
