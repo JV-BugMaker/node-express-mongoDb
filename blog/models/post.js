@@ -59,11 +59,13 @@ Post.prototype.save = function(callback){
 };
 //读取文章以及相关信息
 Post.get = function(name,callback){
+    //参数带回调函数 现在node的封装函数都是按照 参数一 作为err 参数二 才是可操作的
     mongodb.open(function(err,db){
+      //判断参数err是否存在  不存在一般会设置成null
       if(err){
           return callback(err);
       }
-      //读取集合
+      //读取集合 进行判断 以及数据保存等操作
       db.collection('posts',function(err,collection){
           if(err){
               mongodb.close();
