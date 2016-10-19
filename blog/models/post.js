@@ -59,7 +59,7 @@ Post.prototype.save = function(callback){
     });
 };
 //读取文章以及相关信息
-Post.get = function(name,callback){
+Post.getAll = function(name,callback){
     //参数带回调函数 现在node的封装函数都是按照 参数一 作为err 参数二 才是可操作的
     mongodb.open(function(err,db){
       //判断参数err是否存在  不存在一般会设置成null
@@ -93,4 +93,34 @@ Post.get = function(name,callback){
           });
       });
     });
+};
+//添加获取一篇文章的操作
+Post.getOne = function(name,day,title,callback){
+  //打开数据库
+  mongodb.open(function(err,db){
+      if(err){
+          return callback(err);
+      }
+      //读取posts
+      db.collection('posts',function(err,collection){
+          if(err){
+              mongodb.close();
+              return callback(err);
+          }
+          //根据用户名 发表日期 以及文章名查询
+          collection.findOne({
+              "name":name,
+              "title":title,
+              "time.day":day
+          },function(err,doc){
+              mongodb.close();
+              if(err){
+                  return callback(err);
+              }
+              //解析 md 为 html  返回文章对象  
+              doc.post = markdown.toHTML(doc.post);
+              callback(null,doc);
+          });
+      });
+  });
 };
