@@ -187,6 +187,50 @@ module.exports = function(app){
               });
           });
   });
+  app.get("/edit/:name/:day/:title",checkLogin);
+  app.post("/edit/:name/:day/:title",function(req,res){
+      //提交修改数据处理
+      var currentUser = req.session.user;
+      Post.edit(currentUser.name,req.params.day,req.params.title,function(err,post){
+          if(err){
+              req.flash('error',err);
+              return res.redirect('/');
+          }
+          res.render('edit',{
+              title:'编辑',
+              post:post,
+              user:req.session.user,
+              error:req.flash('error').toString()
+          });
+      });
+  });
+  app.get("/update/:name/:day/:title",checkLogin);
+  app.post("/update/:name/:day/:title",function(req,res){
+      //提交修改数据处理
+      var currentUser = req.session.user;
+      Post.update(currentUser.name,req.params.day,req.params.title,req.body.post,function(err,post){
+          var url = encodeURI('/u' + req.params.name + '/' + req.params.day + '/' + req.params.title);
+          if(err){
+              req.flash('error',err);
+              return res.redirect('/');
+          }
+          req.flash('success','修改成功!');
+          res.redirect(url);
+      });
+  });
+  app.get("/remove/:name/:day/:title",checkLogin);
+  app.post("/remove/:name/:day/:title",function(req,res){
+      //提交修改数据处理
+      var currentUser = req.session.user;
+      Post.remove(currentUser.name,req.params.day,req.params.title,function(err,post){
+          if(err){
+              req.flash('error',err);
+              return res.redirect('back');
+          }
+          req.flash('success','修改成功!');
+          res.redirect('/');
+      });
+  });
   function checkLogin(req,res,next)
   {
       if(!req.session.user){
