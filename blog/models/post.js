@@ -31,7 +31,9 @@ Post.prototype.save = function(callback){
         name:this.name,
         title:this.title,
         time:time,
-        post:this.post
+        post:this.post,
+        //增加评论入库
+        comments:[]
     };
 
     //打开数据库
@@ -118,7 +120,14 @@ Post.getOne = function(name,day,title,callback){
                   return callback(err);
               }
               //解析 md 为 html  返回文章对象
-              doc.post = markdown.toHTML(doc.post);
+              // doc.post = markdown.toHTML(doc.post);
+              // 让评论功能也支持markdown
+              if(doc){
+                  doc.post = markdown.toHTML(doc.post);
+                  doc.comments.forEach(function(comment){
+                      comment.content = markdown.toHTML(comment.content);
+                  });
+              }
               callback(null,doc);
           });
       });
