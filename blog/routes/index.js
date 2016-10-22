@@ -205,7 +205,7 @@ app.post('/u/:name/:day/:title',function(req,res){
             return res.redirect;
         }
         req.flash('success','留言成功');
-        res.redirect('back');
+        res.redirect('/');
     });
 });
 

@@ -124,9 +124,14 @@ Post.getOne = function(name,day,title,callback){
               // 让评论功能也支持markdown
               if(doc){
                   doc.post = markdown.toHTML(doc.post);
-                  doc.comments.forEach(function(comment){
-                      comment.content = markdown.toHTML(comment.content);
-                  });
+                  if(doc.comments){
+                    doc.comments.forEach(function(comment){
+                        comment.content = markdown.toHTML(comment.content);
+                    });
+                  }else{
+                    doc.comments = "";
+                  }
+
               }
               callback(null,doc);
           });
