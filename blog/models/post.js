@@ -61,7 +61,8 @@ Post.prototype.save = function(callback){
     });
 };
 //读取文章以及相关信息
-Post.getAll = function(name,callback){
+//增加分页效果  skip 和limit  实际运用不推荐？
+Post.getTen = function(name,page,callback){
     //参数带回调函数 现在node的封装函数都是按照 参数一 作为err 参数二 才是可操作的
     mongodb.open(function(err,db){
       //判断参数err是否存在  不存在一般会设置成null
@@ -78,21 +79,41 @@ Post.getAll = function(name,callback){
           if(name){
               query.name = name;
           }
-          //根据query对象查询数据
-          collection.find(query).sort({
-              time:-1
-          }).toArray(function(err,docs){
-              //插入完成 关闭数据库以及后续结果操作处理
-              mongodb.close();
-              if(err){
-                  return callback(err);
-              }
-              docs.forEach(function(doc){
-                  doc.post = markdown.toHTML(doc.post);
+          //使用count返回特定查询文档数
+          collection.count(query,function(err,total){
+              //根据query对象查询，并跳过前(page-1)*10个结果
+              collection.find(query,{
+                  skip:(page-1)*10,
+                  limit:10
+              }).sort({
+                  time:-1
+              }).toArray(function(err,docs){
+                  mongodb.close();
+                  if(err){
+                      return callback(err);
+                  }
+                  //解析mardown为html
+                  docs.forEach(function(doc){
+                      doc.post = markdown.toHTML(doc.post);
+                  });
+                  callback(null,docs,total);
               });
-              //插入很共返回null 和文档
-              callback(null,docs);
           });
+          //根据query对象查询数据
+          // collection.find(query).sort({
+          //     time:-1
+          // }).toArray(function(err,docs){
+          //     //插入完成 关闭数据库以及后续结果操作处理
+          //     mongodb.close();
+          //     if(err){
+          //         return callback(err);
+          //     }
+          //     docs.forEach(function(doc){
+          //         doc.post = markdown.toHTML(doc.post);
+          //     });
+          //     //插入很共返回null 和文档
+          //     callback(null,docs);
+          // });
       });
     });
 };
