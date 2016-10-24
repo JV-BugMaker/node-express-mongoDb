@@ -240,3 +240,33 @@ Post.remove = function(name,day,title,callback){
         });
     });
 };
+//返回所有文章 存档信息
+Post.getArchive = function(callback){
+    //打开数据库
+    mongodb.open(function(err,db){
+        if(err){
+            return callback(err);
+        }
+        //读取posts
+        db.collection('posts',function(err,collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+            //返回只包含 name、 title 属性的文档组成的存储数组
+            collection.find({},{
+                "name":1,
+                "time":1,
+                "title":1
+            }).sort({
+                "time":-1
+            }).toArray(function(err,docs){
+                mongodb.close();
+                if(err){
+                    return callback(err);
+                }
+                callback(null,docs);
+            });
+        });
+    });
+};
