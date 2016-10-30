@@ -6,11 +6,12 @@
 var mongodb = require('./db');
 var markdown = require('markdown').markdown;
 
-function Post(name,title,post)
+function Post(name,title,tags,post)
 {
     this.name = name;
     this.title = title;
     this.post = post;
+    this.tags = tags;
 }
 
 
@@ -33,7 +34,8 @@ Post.prototype.save = function(callback){
         time:time,
         post:this.post,
         //增加评论入库
-        comments:[]
+        comments:[],
+        tags:this.tags
     };
 
     //打开数据库
