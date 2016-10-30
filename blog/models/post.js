@@ -272,3 +272,56 @@ Post.getArchive = function(callback){
         });
     });
 };
+
+Post.getTags = function(callback){
+    mongodb.open(err,db);
+    if(err){
+        return callback(err);
+    }
+
+    db.collection('posts',function(err,collection){
+        if(err){
+            mongodb.close();
+            return callback(err);
+        }
+        //使用distinct用来找出给定键的所有不同值
+        collection.distinct("tags",function(err,docs){
+            mongodb.close();
+            if(err){
+                return callback(err);
+            }
+            callback(null,docs);
+        });
+    });
+};
+Post.getTag = function(tag,callback){
+  //打开数据库
+  mongodb.open(function(err,db){
+      if(err){
+          return callback(err);
+      }
+      //读取posts
+      db.collection('posts',function(err,collection){
+          if(err){
+              mongodb.close();
+              return callback(err);
+          }
+          //根据用户名 发表日期 以及文章名查询
+          collection.find({
+              "tags":tag
+          },{
+              "name":1,
+              "title":1,
+              "time":1
+          }).sort({
+              "time":-1
+          }).toArray(function(err,docs){
+              mongodb.close();
+              if(err){
+                  return callback(err);
+              }
+              callback(null,docs);
+          });
+      });
+  });
+};
