@@ -105,3 +105,16 @@ a {
     color:#999999;
     margin-right:1.2em;
 }
+.tag {
+    background-color: #ff0000;
+    border-radius: 3px;
+    font-size: 14px;
+    color:#ffffff;
+    display:inline-block;
+    padding: 0 5px;
+    margin-bottom:8px;
+}
+.tag:hover {
+    text-decoration:none;
+    
+}
