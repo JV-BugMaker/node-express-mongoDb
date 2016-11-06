@@ -271,7 +271,7 @@ app.post('/u/:name/:day/:title',function(req,res){
               req.flash('error',err);
               return res.redirect('/');
           }
-          res.rendder('archive',{
+          res.render('archive',{
               title:'存档',
               posts:posts,
               user:req.session.user,

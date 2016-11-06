@@ -274,24 +274,24 @@ Post.getArchive = function(callback){
 };
 
 Post.getTags = function(callback){
-    mongodb.open(err,db);
-    if(err){
-        return callback(err);
-    }
-
-    db.collection('posts',function(err,collection){
-        if(err){
-            mongodb.close();
-            return callback(err);
-        }
-        //使用distinct用来找出给定键的所有不同值
-        collection.distinct("tags",function(err,docs){
-            mongodb.close();
-            if(err){
-                return callback(err);
-            }
-            callback(null,docs);
-        });
+    mongodb.open(function(err,db){
+      if(err){
+          return callback(err);
+      }
+      db.collection('posts',function(err,collection){
+          if(err){
+              mongodb.close();
+              return callback(err);
+          }
+          //使用distinct用来找出给定键的所有不同值
+          collection.distinct("tags",function(err,docs){
+              mongodb.close();
+              if(err){
+                  return callback(err);
+              }
+              callback(null,docs);
+          });
+      });
     });
 };
 Post.getTag = function(tag,callback){
