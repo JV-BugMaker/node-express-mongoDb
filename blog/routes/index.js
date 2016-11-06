@@ -155,7 +155,22 @@ module.exports = function(app){
       req.flash('success','文件上传成功');
       res.redirect('/upload');
   });
-
+  //搜索功能处理
+  app.get('/search',function(){
+      Post.search(function(err,docs){
+          if(err){
+              req.flash(err);
+              return res.redirect('/');
+          }
+          res.render({
+              title:"SEARCH"+req.query.keyword,
+              posts:posts,
+              user:req.session.user,
+              success:req.flash('success').toString(),
+              error:req.flash('error').toString()
+          });
+      });
+  });
   //路由添加处理
   app.get('/u/:name',function(req,res){
       var page = req.query.page ? parseInt(req.query.p):0;
