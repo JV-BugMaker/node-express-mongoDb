@@ -35,7 +35,8 @@ Post.prototype.save = function(callback){
         post:this.post,
         //增加评论入库
         comments:[],
-        tags:this.tags
+        tags:this.tags,
+        pv:0
     };
 
     //打开数据库
@@ -146,6 +147,19 @@ Post.getOne = function(name,day,title,callback){
               // doc.post = markdown.toHTML(doc.post);
               // 让评论功能也支持markdown
               if(doc){
+                  //增加pv统计
+                  collection.update({
+                    "name":name,
+                    "time.day":time,
+                    "title":title
+                  },{
+                    $inc:{"pv":1}
+                  },function(err){
+                    mongodb.close();
+                    if(err){
+                        return callback(err);
+                    }
+                  });
                   doc.post = markdown.toHTML(doc.post);
                   if(doc.comments){
                     doc.comments.forEach(function(comment){
