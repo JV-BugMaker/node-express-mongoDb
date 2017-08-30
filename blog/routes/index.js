@@ -155,6 +155,15 @@ module.exports = function(app){
       req.flash('success','文件上传成功');
       res.redirect('/upload');
   });
+  //友情链接
+  app.get('/links',function(){
+      res.render('links',{
+          title:'友情链接',
+          user:req.session.user,
+          success:req.flash('success').toString(),
+          error:req.flash('error').toString()
+      });
+  });
   //搜索功能处理
   app.get('/search',function(){
       Post.search(function(err,docs){
