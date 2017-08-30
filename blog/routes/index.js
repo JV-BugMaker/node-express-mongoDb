@@ -156,7 +156,7 @@ module.exports = function(app){
       res.redirect('/upload');
   });
   //友情链接
-  app.get('/links',function(){
+  app.get('/links',function(res,req){
       res.render('links',{
           title:'友情链接',
           user:req.session.user,
@@ -334,6 +334,10 @@ app.post('/u/:name/:day/:title',function(req,res){
               error:req.flash('error').toString()
           });
       });
+  });
+  //404 处理
+  app.use(function(req,res){
+      res.render("404");
   });
   function checkLogin(req,res,next)
   {
