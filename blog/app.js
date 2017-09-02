@@ -14,6 +14,9 @@ var users = require('./routes/users');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
+var fs = require('fs');
+var accessLog = fs.createWriteStream('access.log',{flag:'a'});
+var errorLog = fs.createWriteStream('error.log',{flag:'a'});
 var app = express();
 var multer = require('multer');
 // view engine setup
@@ -28,6 +31,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//类似middlewave一样
+app.use(function(err,req,res,next){
+    var meta = "["+new date()+"]" + req.url + '\n';
+    errorLog.write(meta + err.stack + '\n');
+    next();
+});
 
 //添加session
 app.use(session({
