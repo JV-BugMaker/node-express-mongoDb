@@ -294,6 +294,30 @@ app.post('/u/:name/:day/:title',function(req,res){
           res.redirect('/');
       });
   });
+  //增加转载路由
+  app.get('/reprint/:name/:day/:title',checkLogin);
+  app.post('/reprint/:name/:day/:title',function(req,res){
+        Post.edit(req.params.name,req.params.day,req.params.title,function(err,post){
+            if(err){
+                req.flash('error',err);
+                return res.redirect(back);
+            }
+            //获取转载
+            var currentUser = req.session.user,
+                reprint_from = {name:post.name,day:post.time.day,title:post.title},
+                reprint_to = {name:currentUser.name,head:currentUser.head};
+
+            Post.reprint(reprint_from,reprint_to,function(err,post){
+                if(err){
+                    req.flash('error',err);
+                    return res.redirect('back');
+                }
+                req.flash('success','转载成功');
+                var url = encodeURI('/u/'+post.name+'/'+post.time.day+'/'+post.title);
+                res.redirect(url);
+            });
+        });
+  });
   app.get('/archive',function(req,res){
       Post.getArchive(function(err,posts){
           if(err){
