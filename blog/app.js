@@ -1,4 +1,6 @@
 var express = require('express');
+var passport = require('passport'),
+    GithubStrategy = require('passport-github').Strategy;
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -56,6 +58,8 @@ app.use(multer({
         return filename;
     }
 }));
+//初始化
+app.use(passport.initialize());
 
 //直接访问了 routes
 routes(app);
@@ -71,6 +75,15 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
+
+passport.use(new GithubStrategy({
+  clientID:'',
+  clientSecret:'',
+  callbackurl:'',
+},function(accessToken,refreshToken,profile,done){
+    done(null,profile);
+}));
+
 
 // development error handler
 // will print stacktrace
